@@ -10,6 +10,9 @@ function validateEnv() {
     JWT_SECRET: str(),
     PORT: port(),
     EXPIRES: num(),
+    NFT_STORAGE_KEY: str(),
+    ALCHEMY_API_KEY: str(),
+    NETWORK: str(),
   });
 }
 

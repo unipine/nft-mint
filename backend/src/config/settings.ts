@@ -7,4 +7,7 @@ export default {
   MONGO_PASS: process.env.MONGO_PASS,
   MONGO_DB: process.env.MONGO_DB,
   EXPIRES: process.env.EXPIRES,
+  NFT_STORAGE_KEY: process.env.NFT_STORAGE_KEY,
+  ALCHEMY_API_KEY: process.env.ALCHEMY_API_KEY,
+  NETWORK: process.env.NETWORK,
 };
