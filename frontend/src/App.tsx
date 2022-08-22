@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 import * as AuthService from "./services/auth.service";
-import IUser from "./types/user.type";
+import { IUserWithToken } from "./types/user";
 
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -16,7 +16,7 @@ import NftMint from "./components/NftMint";
 import EventBus from "./common/EventBus";
 
 const App: React.FC = () => {
-  const [currentUser, setCurrentUser] = useState<IUser | undefined>(undefined);
+  const [currentUser, setCurrentUser] = useState<IUserWithToken | undefined>(undefined);
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
