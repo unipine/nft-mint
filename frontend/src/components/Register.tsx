@@ -2,16 +2,14 @@ import React, { useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
-import IUser from "../types/user.type";
+import { IUser } from "../types/user";
 import { register } from "../services/auth.service";
 
 const Register: React.FC = () => {
   const [successful, setSuccessful] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 
-  const initialValues: IUser = {
-    user: { email: "", password: "" },
-  };
+  const initialValues: IUser = { email: "", password: "" };
 
   const validationSchema = Yup.object().shape({
     email: Yup.string()
@@ -28,9 +26,7 @@ const Register: React.FC = () => {
   });
 
   const handleRegister = (formValue: IUser) => {
-    const {
-      user: { email, password },
-    } = formValue;
+    const { email, password } = formValue;
 
     register(email, password).then(
       () => {
