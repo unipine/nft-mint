@@ -8,6 +8,7 @@ import authMiddleware from "../middlewares/auth.middleware";
 import walletModel from "../models/wallet.model";
 import { IUser } from "../models/user.model";
 import WalletAlreadyExistsException from "../exceptions/WalletAlreadyExistsException";
+import WalletNotExistException from "../exceptions/WalletNotExistException";
 
 class WalletController implements Controller {
   public path = "/wallet";
@@ -69,6 +70,9 @@ class WalletController implements Controller {
 
     try {
       const wallet = await walletModel.findOne({ user });
+      if (!wallet) {
+        throw new WalletNotExistException(user.email);
+      }
 
       const walletObj = omit(wallet.toJSON(), ["user", "_id"]);
 
