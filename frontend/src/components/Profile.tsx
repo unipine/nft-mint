@@ -7,21 +7,32 @@ const Profile: React.FC = () => {
 
   return (
     <div className="container">
-      <header className="jumbotron">
-        <h3>
-          <strong>{currentUser.user.email}</strong> Profile
-        </h3>
-      </header>
-      <p className="border-bottom pb-1">
-        <strong>Token:</strong> {currentUser.token.substring(0, 20)} ...{" "}
-        {currentUser.token.substr(currentUser.token.length - 20)}
-      </p>
-      <p className="border-bottom pb-1">
-        <strong>Id:</strong> {currentUser.user._id}
-      </p>
-      <p className="border-bottom pb-1">
-        <strong>Joined:</strong> {currentUser.user.createdAt}
-      </p>
+      <div className="card card-container">
+        <div className="form-group">
+          <label>Email:</label>
+          <input
+            defaultValue={currentUser.user.email.toUpperCase()}
+            className="form-control"
+            disabled
+          />
+        </div>
+        <div className="form-group">
+          <label>User ID:</label>
+          <input
+            defaultValue={currentUser.user._id}
+            className="form-control"
+            disabled
+          />
+        </div>
+        <div className="form-group">
+          <label>Joined:</label>
+          <input
+            defaultValue={currentUser.user.createdAt}
+            className="form-control"
+            disabled
+          />
+        </div>
+      </div>
     </div>
   );
 };

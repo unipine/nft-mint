@@ -7,40 +7,34 @@ import Register from "./components/Register";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
 import NftMint from "./components/NftMint";
+import Wallet from "./components/Wallet";
 import * as AuthService from "./services/auth.service";
 import { IUserWithToken } from "./types/user";
 import EventBus from "./common/EventBus";
 
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import settings from "./config/settings";
 
 const App: React.FC = () => {
-  const [currentUser, setCurrentUser] = useState<IUserWithToken | undefined>(
-    undefined
-  );
-
-  const handleLogout = () => {
-    AuthService.logout();
-    window.location.href = "/login";
-  };
+  const [currentUser, setCurrentUser] = useState<IUserWithToken>();
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
 
-    if (user) {
-      setCurrentUser(user);
-    }
+    user && setCurrentUser(user);
 
-    EventBus.on("logout", handleLogout);
+    EventBus.on("logout", logOut);
 
     return () => {
-      EventBus.remove("logout", handleLogout);
+      EventBus.remove("logout", logOut);
     };
   }, []);
 
   const logOut = () => {
     AuthService.logout();
     setCurrentUser(undefined);
+    window.location.href = "/login";
   };
 
   return (
@@ -50,18 +44,15 @@ const App: React.FC = () => {
           NFT mint
         </Link>
         <div className="navbar-nav mr-auto">
-          <li className="nav-item">
-            <Link to={"/home"} className="nav-link">
-              Home
-            </Link>
-          </li>
-
-          {currentUser && (
-            <li className="nav-item">
-              <Link to={"/mint"} className="nav-link">
-                Mint
-              </Link>
-            </li>
+          {settings.NAV_LINKS.map(
+            (link) =>
+              (link.public || currentUser) && (
+                <li key={`nav-link-${link.label}`} className="nav-item">
+                  <Link to={link.path} className="nav-link">
+                    {link.label}
+                  </Link>
+                </li>
+              )
           )}
         </div>
 
@@ -103,6 +94,7 @@ const App: React.FC = () => {
           {currentUser && (
             <>
               <Route exact path="/profile" component={Profile} />
+              <Route path="/wallet" component={Wallet} />
               <Route path="/mint" component={NftMint} />
             </>
           )}

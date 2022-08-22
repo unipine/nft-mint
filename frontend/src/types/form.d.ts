@@ -1,4 +1,4 @@
-export type FormValues = {
+export type MintFormValuesType = {
   name: string;
   description: string;
 };

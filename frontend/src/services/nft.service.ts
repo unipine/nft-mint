@@ -13,17 +13,6 @@ export const mint = (formdata: any) => {
     .then(validateAuth);
 };
 
-export const login = (email: string, password: string) => {
-  return axios
-    .post(`${settings.BACKEND_URL}/auth/loginWithEmail`, {
-      email,
-      password,
-    })
-    .then((response) => {
-      if (response.data.token) {
-        localStorage.setItem("user", JSON.stringify(response.data));
-      }
-
-      return response.data;
-    });
+export const getNfts = () => {
+  return axios.get(`${settings.BACKEND_URL}/nftmint`);
 };

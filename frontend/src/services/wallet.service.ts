@@ -8,11 +8,17 @@ export const generateWallet = () => {
 
   return axios
     .post(
-      `${settings.BACKEND_URL}/nftmint`,
+      `${settings.BACKEND_URL}/wallet`,
       {},
       {
         headers: { ...auth },
       }
     )
     .then(validateAuth);
+};
+
+export const getWallet = () => {
+  const auth = authHeader();
+
+  return axios.get(`${settings.BACKEND_URL}/wallet`, { headers: { ...auth } });
 };
