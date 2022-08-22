@@ -1,12 +1,10 @@
-# Backend template
-
 ## Installing
 ```
 yarn
 ```
 ## Running
 ```
-yarn start
+yarn dev
 ```
 ## Environment
 `

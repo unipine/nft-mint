@@ -1,22 +1,14 @@
-# Hardhat Boilerplate
+# NFT Minting Application
 
-This repository contains a sample project that you can use as the starting point
-for your Ethereum project. It's also a great fit for learning the basics of
-smart contract development.
-
-This project is intended to be used with the
-[Hardhat Beginners Tutorial](https://hardhat.org/tutorial), but you should be
-able to follow it by yourself by reading the README and exploring its
-`contracts`, `tests`, `scripts` and `frontend` directories.
+This repository contains smart contracts and REST APIs that randomly generates a wallet address per user and mint NFTs.
 
 ## Quick start
 
-The first things you need to do are cloning this repository and installing its
-dependencies:
+The first things you need to do are cloning this repository and installing its dependencies:
 
 ```sh
-git clone https://github.com/NomicFoundation/hardhat-boilerplate.git
-cd hardhat-boilerplate
+git clone https://github.com/unipine/nft-mint.git
+cd nft-mint
 npm install
 ```
 
@@ -26,65 +18,168 @@ Once installed, let's run Hardhat's testing network:
 npx hardhat node
 ```
 
-Then, on a new terminal, go to the repository's root folder and run this to
-deploy your contract:
+Then, on a new terminal, go to the repository's root folder and run this to deploy your contract:
 
 ```sh
-npx hardhat run scripts/deploy.js --network localhost
+npm run deploy
 ```
 
-Finally, we can run the frontend with:
+Finally, we can run the backend with:
 
 ```sh
-cd frontend
-npm install
-npm start
+cd backend
+yarn
+yarn dev
 ```
 
-Open [http://localhost:3000/](http://localhost:3000/) to see your Dapp. You will
-need to have [Metamask](https://metamask.io) installed and listening to
-`localhost 8545`.
+Backend URL [http://localhost:1337/](http://localhost:1337/) to see your backend. You will need to have [Metamask](https://metamask.io) installed and listening to `localhost 8545`.
 
-## User Guide
+## Overview
 
-You can find detailed instructions on using this repository and many tips in [its documentation](https://hardhat.org/tutorial).
+### Smart Contract
 
-- [Writing and compiling contracts](https://hardhat.org/tutorial/writing-and-compiling-contracts/)
-- [Setting up the environment](https://hardhat.org/tutorial/setting-up-the-environment/)
-- [Testing Contracts](https://hardhat.org/tutorial/testing-contracts/)
-- [Setting up Metamask](https://hardhat.org/tutorial/boilerplate-project#how-to-use-it)
-- [Hardhat's full documentation](https://hardhat.org/docs/)
+This [NFT contract](https://github.com/unipine/nft-mint/blob/main/contracts/TestNFT.sol) developed by [hardhat](https://hardhat.org/tutorial/boilerplate-project) according to ERC-721 Standard. 
 
-For a complete introduction to Hardhat, refer to [this guide](https://hardhat.org/getting-started/#overview).
+Provides two functions for storing CID or text to the Smart Contract.
 
-## What's Included?
+- [safeMintImage](https://github.com/unipine/nft-mint/blob/3d377fef5ee842a7d2128f46878bd5f92f453dec/contracts/TestNFT.sol#L21-L25) 
+This function stores CID (or text) to Solidity mapping.
+- [safeMintText](https://github.com/unipine/nft-mint/blob/3d377fef5ee842a7d2128f46878bd5f92f453dec/contracts/TestNFT.sol#L27-L31) 
+This function stores CID (or text) to Solidity slots according to [Solidity string storage layout](https://docs.soliditylang.org/en/v0.8.13/internals/layout_in_storage.html#bytes-and-string).
 
-This repository uses our recommended hardhat setup, by using our [`@nomicfoundation/hardhat-toolbox`](https://hardhat.org/hardhat-runner/plugins/nomicfoundation-hardhat-toolbox). When you use this plugin, you'll be able to:
+Gas reports for both functions:
+|         | safeMintImage  | safeMintText |
+| ------- | -------------- | ------------ |
+| Gas Fee |     878336     |    923556    |
 
-- Deploy and interact with your contracts using [ethers.js](https://docs.ethers.io/v5/) and the [`hardhat-ethers`](https://hardhat.org/hardhat-runner/plugins/nomiclabs-hardhat-ethers) plugin.
-- Test your contracts with [Mocha](https://mochajs.org/), [Chai](https://chaijs.com/) and our own [Hardhat Chai Matchers](https://hardhat.org/hardhat-chai-matchers) plugin.
-- Interact with Hardhat Network with our [Hardhat Network Helpers](https://hardhat.org/hardhat-network-helpers).
-- Verify the source code of your contracts with the [hardhat-etherscan](https://hardhat.org/hardhat-runner/plugins/nomiclabs-hardhat-etherscan) plugin.
-- Get metrics on the gas used by your contracts with the [hardhat-gas-reporter](https://github.com/cgewecke/hardhat-gas-reporter) plugin.
-- Measure your tests coverage with [solidity-coverage](https://github.com/sc-forks/solidity-coverage).
+### Backend
 
-This project also includes [a sample frontend/Dapp](./frontend), which uses [Create React App](https://github.com/facebook/create-react-app).
+This [backend](https://github.com/unipine/nft-mint/tree/main/backend) was developed with [Express.js](https://expressjs.com/) and [TypeScript](https://www.typescriptlang.org/). Generates wallet addresses randomly and mint NFTs to users using Admin (Owner of the contract) wallet. Uploads images to IPFS using [NFT.Storage](https://nft.storage/) and stores texts directly to the contract.
 
-## Troubleshooting
+Endpoints:
+<details>
+<summary>/auth/register</summary>
+<pre>
+- Feature: Register user
+- Request Type: POST
+- Form-data: 
+  {
+    email: Email,
+    password: String
+  }
+- Response: 
+  {
+    token: String,
+    user: {
+      email: String,
+      createdAt: Date,
+    }
+  }
+</pre>
+</details>
 
-- `Invalid nonce` errors: if you are seeing this error on the `npx hardhat node`
-  console, try resetting your Metamask account. This will reset the account's
-  transaction history and also the nonce. Open Metamask, click on your account
-  followed by `Settings > Advanced > Reset Account`.
+<details>
+<summary>/auth/loginWithEmail</summary>
+<pre>
+- Feature: Login with credential
+- Request Type: POST
+- Form-data: 
+  {
+    email: Email,
+    password: String
+  }
+- Response: 
+  {
+    token: String,
+    user: {
+      email: String,
+      createdAt: Date,
+    }
+  }
+</pre>
+</details>
 
-## Setting up your editor
+<details>
+<summary>/wallet</summary>
+<pre>
+- Feature: Generate wallet address
+- Request Type: POST
+- Authorization required
+- Response: 
+  {
+    publicKey: String,
+    privateKey: String,
+    createdAt: Date,
+  }
+</pre>
+</details>
 
-[Hardhat for Visual Studio Code](https://hardhat.org/hardhat-vscode) is the official Hardhat extension that adds advanced support for Solidity to VSCode. If you use Visual Studio Code, give it a try!
+<details>
+<summary>/wallet</summary>
+<pre>
+- Feature: Get wallet address
+- Request Type: GET
+- Authorization required
+- Response: 
+  {
+    publicKey: String,
+    privateKey: String,
+    createdAt: Date,
+  }
+</pre>
+</details>
 
-## Getting help and updates
+<details>
+<summary>/nftmint</summary>
+<pre>
+- Feature: Mint NFT to user with admin wallet
+- Request Type: POST
+- Authorization required
+- Form-data: 
+  {
+    name: String,
+    description: String,
+    file: File
+  }
+- Response: 
+  {
+    data: Object | String,
+    type: "text" | "image",
+    nftId: Number,
+  }
+</pre>
+</details>
 
-If you need help with this project, or with Hardhat in general, please read [this guide](https://hardhat.org/hardhat-runner/docs/guides/getting-help) to learn where and how to get it.
+<details>
+<summary>/nftmint</summary>
+<pre>
+- Feature: Get all minted NFTs
+- Request Type: GET
+- Response: 
+  [
+    {
+      data: Object | String,
+      type: "text" | "image",
+      nftId: Number,
+    }
+  ]
+</pre>
+</details>
 
-For the latest news about Hardhat, [follow us on Twitter](https://twitter.com/HardhatHQ), and don't forget to star [our GitHub repository](https://github.com/NomicFoundation/hardhat)!
+<details>
+<summary>/nftmint/:nftId</summary>
+<pre>
+- Feature: Get NFT data by nftId
+- Request Type: GET
+- Response: 
+  {
+    data: Object | String,
+  }
+</pre>
+</details>
 
-**Happy _building_!**
+
+## References
+
+- Contract Address
+[0xcc2c0117bC4CE5Cd261a44331eCcd278Ab2EF66d](https://goerli.etherscan.io/address/0xcc2c0117bC4CE5Cd261a44331eCcd278Ab2EF66d)
