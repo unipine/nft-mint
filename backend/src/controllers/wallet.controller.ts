@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction, Router } from "express";
-import ethers from "ethers";
+import * as ethers from "ethers";
 import crypto from "crypto";
 import { omit } from "lodash";
 
 import Controller from "../interfaces/controller";
 import authMiddleware from "../middlewares/auth.middleware";
 import walletModel from "../models/wallet.model";
-import { UserDocument } from "../models/user.model";
+import { IUser } from "../models/user.model";
 import WalletAlreadyExistsException from "../exceptions/WalletAlreadyExistsException";
 
 class WalletController implements Controller {
@@ -20,10 +20,6 @@ class WalletController implements Controller {
   private initializeRoutes() {
     this.router.post(`${this.path}`, authMiddleware, this.generate);
     this.router.get(`${this.path}`, authMiddleware, this.getByUser);
-    // this.router.post(
-    //   `${this.path}/verifyToken`,
-    //   this.getById
-    // );
   }
 
   /**
@@ -34,7 +30,7 @@ class WalletController implements Controller {
     response: Response,
     next: NextFunction
   ) => {
-    const user = request.user as UserDocument;
+    const user = request.user as IUser;
 
     try {
       const wallet = await walletModel.findOne({ user });
@@ -69,7 +65,7 @@ class WalletController implements Controller {
     response: Response,
     next: NextFunction
   ) => {
-    const user = request.user as UserDocument;
+    const user = request.user as IUser;
 
     try {
       const wallet = await walletModel.findOne({ user });

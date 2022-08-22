@@ -7,7 +7,7 @@ import settings from "../config/settings";
 import Controller from "../interfaces/controller";
 import UploadedFile from "../interfaces/uploadedFile";
 import nftModel from "../models/nft.model";
-import { UserDocument } from "../models/user.model";
+import { IUser } from "../models/user.model";
 import walletModel from "../models/wallet.model";
 import validationMiddleware from "../middlewares/validation.middleware";
 import authMiddleware from "../middlewares/auth.middleware";
@@ -15,6 +15,7 @@ import { createNftSchema, CreateNftData } from "../schemas/nft.schema";
 import WalletNotExistException from "../exceptions/WalletNotExistException";
 import NotEnoughWalletBalanceException from "../exceptions/NotEnoughWalletBalanceException";
 import WrongParamsException from "../exceptions/WrongParamsException";
+import WrongFileException from "../exceptions/WrongFileException";
 
 import contract from "../contracts/TestNFT.json";
 import contractAddress from "../contracts/contract-address.json";
@@ -23,9 +24,26 @@ class NftController implements Controller {
   public path = "/nftmint";
   public router = Router();
   private client = new NFTStorage({ token: settings.NFT_STORAGE_KEY });
+  private wallet: Wallet;
+  private TestNft: Contract;
 
   constructor() {
     this.initializeRoutes();
+    this.initializeAdminWallet();
+    this.initializeContract();
+  }
+
+  private initializeAdminWallet() {
+    // Create wallet provider with admin's wallet private key
+    const provider = new providers.AlchemyProvider(
+      settings.NETWORK,
+      settings.ALCHEMY_API_KEY
+    );
+    this.wallet = new Wallet(settings.ADMIN_WALLET, provider);
+  }
+
+  private initializeContract() {
+    this.TestNft = new Contract(contractAddress.Nft, contract.abi, this.wallet);
   }
 
   private initializeRoutes() {
@@ -49,7 +67,7 @@ class NftController implements Controller {
   ) => {
     const { name, description } = request.body;
     const file: UploadedFile = request.files.file as unknown as UploadedFile;
-    const user = request.user as UserDocument;
+    const user = request.user as IUser;
 
     try {
       const userWallet = await walletModel.findOne({ user });
@@ -57,13 +75,7 @@ class NftController implements Controller {
         throw new WalletNotExistException(user.email);
       }
 
-      // Create wallet provider with admin's wallet private key
-      const provider = new providers.AlchemyProvider(
-        settings.NETWORK,
-        settings.ALCHEMY_API_KEY
-      );
-      const wallet = new Wallet(settings.ADMIN_WALLET, provider);
-      const balance = await wallet.getBalance();
+      const balance = await this.wallet.getBalance();
 
       // Require at least 3000000 gwei to mint NFT
       if (balance.lt(BigNumber.from(3000000))) {
@@ -71,9 +83,8 @@ class NftController implements Controller {
       }
 
       // Create an instance of the contract
-      const TestNft = new Contract(contractAddress.Nft, contract.abi, wallet);
-      const nftId = await TestNft.currentCounter();
-      let data;
+      const nftId = await this.TestNft.currentCounter();
+      let data, type;
 
       if (file.mimetype.startsWith("image")) {
         // Upload nft metadata to ipfs using nft.storage
@@ -84,25 +95,31 @@ class NftController implements Controller {
             type: file.mimetype,
           }),
         });
+        type = "image";
 
         // Mint Image NFT belonging to user
-        await TestNft.connect(wallet).safeMintImage(
-          userWallet.publicKey,
-          data.ipnft
-        );
-      } else {
-        // Mint Text NFT belonging to user
+        await this.TestNft.safeMintImage(userWallet.publicKey, data.ipnft);
+      } else if (file.mimetype.startsWith("text") && file.size <= 1024) {
         data = file.data.toString();
-        await TestNft.connect(wallet).safeMintImage(userWallet.publicKey, data);
+        type = "text";
+
+        // Mint Text NFT belonging to user using mapping
+        // await this.TestNft.safeMintImage(userWallet.publicKey, data);
+
+        // Mint Text NFT belonging to user using TextStorage
+        await this.TestNft.safeMintText(userWallet.publicKey, data);
+      } else {
+        throw new WrongFileException();
       }
 
       const nft = await nftModel.create({
         user,
         wallet: userWallet,
         data,
+        type,
         nftId,
       });
-      const nftObj = omit(nft.toJSON(), ["user", "_id"]);
+      const nftObj = omit(nft.toJSON(), ["_id", "user", "wallet"]);
 
       response.send(nftObj);
     } catch (error) {
@@ -142,16 +159,19 @@ class NftController implements Controller {
     const { nftId } = request.params;
 
     try {
-      if (typeof nftId === "number") {
-        const TestNft = new Contract(contractAddress.Nft, contract.abi);
-        const counter = await TestNft.currentCounter();
+      const counter = await this.TestNft.currentCounter();
 
-        if (nftId > counter) {
-          const cid = await TestNft.tokenUri(nftId);
+      if (counter.gt(BigNumber.from(nftId))) {
+        const nft = await nftModel.findOne({ "nftId": nftId });
 
+        if (nft.type === "image") {
+          // Get NFT cid if nft type is image
+          const cid = await this.TestNft.tokenURI(nftId);
           response.send({ cid });
         } else {
-          throw new WrongParamsException();
+          // Get NFT text if nft type is text when using TextStroage
+          const text = await this.TestNft.readText(nftId);
+          response.send({ text });
         }
       } else {
         throw new WrongParamsException();
