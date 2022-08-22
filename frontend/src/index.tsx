@@ -6,15 +6,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { refreshToken } from "./services/auth.service";
 
-new Promise(async (resolve) => {
-  const result = await refreshToken();
-
-  if (result === false) {
-    window.location.href = "/login";
-  }
-
-  resolve(result);
-});
+refreshToken();
 
 ReactDOM.render(
   <BrowserRouter>

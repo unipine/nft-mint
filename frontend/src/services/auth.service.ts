@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
+import eventBus from "../common/EventBus";
 import settings from "../config/settings";
 import { IUserWithToken } from "../types/user";
 
@@ -47,14 +48,14 @@ export const refreshToken = () => {
       return response.data;
     })
     .catch((error) => {
-      logout();
+      eventBus.dispatch("logout");
 
       return false;
     });
 };
 
 export const validateAuth = (response: AxiosResponse) => {
-  response.status === 401 && logout();
+  response.status === 401 && eventBus.dispatch("logout");
   return response.data;
 };
 

@@ -1,22 +1,28 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Switch, Route, Link } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
-
-import * as AuthService from "./services/auth.service";
-import { IUserWithToken } from "./types/user";
 
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
 import NftMint from "./components/NftMint";
-
+import * as AuthService from "./services/auth.service";
+import { IUserWithToken } from "./types/user";
 import EventBus from "./common/EventBus";
 
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+
 const App: React.FC = () => {
-  const [currentUser, setCurrentUser] = useState<IUserWithToken | undefined>(undefined);
+  const [currentUser, setCurrentUser] = useState<IUserWithToken | undefined>(
+    undefined
+  );
+
+  const handleLogout = () => {
+    AuthService.logout();
+    window.location.href = "/login";
+  };
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
@@ -25,10 +31,10 @@ const App: React.FC = () => {
       setCurrentUser(user);
     }
 
-    EventBus.on("logout", logOut);
+    EventBus.on("logout", handleLogout);
 
     return () => {
-      EventBus.remove("logout", logOut);
+      EventBus.remove("logout", handleLogout);
     };
   }, []);
 
