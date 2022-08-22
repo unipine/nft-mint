@@ -2,6 +2,7 @@ import { Request, Response, NextFunction, Router } from "express";
 import { NFTStorage, File } from "nft.storage";
 import { Contract, Wallet, providers, BigNumber } from "ethers";
 import { omit } from "lodash";
+import { v4 as uuidv4 } from "uuid";
 
 import settings from "../config/settings";
 import Controller from "../interfaces/controller";
@@ -43,6 +44,7 @@ class NftController implements Controller {
   }
 
   private initializeContract() {
+    // Create contract instance
     this.TestNft = new Contract(contractAddress.Nft, contract.abi, this.wallet);
   }
 
@@ -88,10 +90,11 @@ class NftController implements Controller {
 
       if (file.mimetype.startsWith("image")) {
         // Upload nft metadata to ipfs using nft.storage
+        const uuid = uuidv4();
         data = await this.client.store({
           name,
           description,
-          image: new File(file.data, name, {
+          image: new File([file.data as BlobPart], uuid, {
             type: file.mimetype,
           }),
         });
@@ -162,7 +165,7 @@ class NftController implements Controller {
       const counter = await this.TestNft.currentCounter();
 
       if (counter.gt(BigNumber.from(nftId))) {
-        const nft = await nftModel.findOne({ "nftId": nftId });
+        const nft = await nftModel.findOne({ nftId: nftId });
 
         if (nft.type === "image") {
           // Get NFT cid if nft type is image

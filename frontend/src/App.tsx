@@ -8,6 +8,7 @@ import Home from "./components/Home";
 import Profile from "./components/Profile";
 import NftMint from "./components/NftMint";
 import Wallet from "./components/Wallet";
+import Gallery from "./components/Gallery";
 import * as AuthService from "./services/auth.service";
 import { IUserWithToken } from "./types/user";
 import EventBus from "./common/EventBus";
@@ -96,6 +97,7 @@ const App: React.FC = () => {
               <Route exact path="/profile" component={Profile} />
               <Route path="/wallet" component={Wallet} />
               <Route path="/mint" component={NftMint} />
+              <Route path="/gallery" component={Gallery} />
             </>
           )}
         </Switch>

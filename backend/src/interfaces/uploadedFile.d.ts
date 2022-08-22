@@ -4,7 +4,7 @@ interface UploadedFile {
   mv(path: string): Promise<void>;
   encoding: string;
   mimetype: string;
-  data: Array<BlobPart>;
+  data: Buffer;
   tempFilePath: string;
   truncated: boolean;
   size: number;

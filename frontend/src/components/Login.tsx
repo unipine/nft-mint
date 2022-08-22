@@ -4,9 +4,9 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 import { login } from "../services/auth.service";
-import { RouterProps } from "../types/router";
+import { IRouterProps } from "../types/router";
 
-const Login: React.FC<RouteComponentProps<RouterProps>> = ({ history }) => {
+const Login: React.FC<RouteComponentProps<IRouterProps>> = ({ history }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 

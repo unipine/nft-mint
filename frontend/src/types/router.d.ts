@@ -1,3 +1,3 @@
-export interface RouterProps {
+export interface IRouterProps {
   history: string;
 }

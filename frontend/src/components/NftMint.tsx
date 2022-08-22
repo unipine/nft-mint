@@ -8,7 +8,7 @@ import { MintFormValuesType } from "../types/form";
 const NftMint = () => {
   const { register, handleSubmit, reset } = useForm<MintFormValuesType>();
 
-  const [files, setFiles] = useState<Array<File & { preview: string }>>([]);
+  const [file, setFile] = useState<File & { preview: string } | undefined>();
   const [message, setMessage] = useState<string>();
   const [success, setSuccess] = useState<boolean>();
 
@@ -17,28 +17,26 @@ const NftMint = () => {
       "image/*": [".jpeg", ".png", ".txt"],
     },
     onDrop: (acceptedFiles) => {
-      setFiles(
-        acceptedFiles.map((file) =>
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
-          })
-        )
+      setFile(
+        Object.assign(acceptedFiles[0], {
+          preview: URL.createObjectURL(acceptedFiles[0]),
+        })
       );
     },
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    if (files.length === 0) {
+    if (!file) {
       return window.alert("Please select the image.");
     }
 
     const formdata = new FormData();
     formdata.append("name", data.name);
     formdata.append("description", data.description);
-    formdata.append("file", files[0]);
+    formdata.append("file", file);
 
     reset();
-    setFiles([]);
+    setFile(undefined);
 
     setSuccess(false);
     mint(formdata)
@@ -73,8 +71,8 @@ const NftMint = () => {
           <>
             <div className="border rounded mb-2 p-2" {...getRootProps()}>
               <input {...getInputProps()} />
-              {files[0] ? (
-                <p>{files[0].name}</p>
+              {file ? (
+                <p>{file.name}</p>
               ) : (
                 <>
                   <p>Drag and drop a file here, or click to select file</p>
@@ -86,10 +84,10 @@ const NftMint = () => {
             </div>
 
             <aside>
-              {files.length > 0 && (
+              {file && (
                 <img
-                  src={files[0].preview}
-                  alt={files[0].name}
+                  src={file.preview}
+                  alt={file.name}
                   className="w-100 mb-2"
                   style={{
                     borderRadius: "0.5rem",

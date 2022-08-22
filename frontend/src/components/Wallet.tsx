@@ -12,7 +12,6 @@ const Wallet = () => {
     getWallet()
       .then((response) => {
         setWallet(response.data);
-        console.log(response.data);
       })
       .catch((error) =>
         console.warn(error.response.data.message || error.message)
