@@ -1,14 +1,9 @@
 import bcrypt from "bcrypt";
-import cryptoRandomString from "crypto-random-string";
 import { omit } from "lodash";
 
-import settings from "../config/settings";
-import userModel, { IUserResponse } from "../models/user.model";
-import verifyModel from "../models/verify.model";
+import userModel, { IUserResponse, UserDocument } from "../models/user.model";
 import TokenDataWithUser from "../interfaces/tokenDataWithUser";
 import { CreateUserInput } from "../schemas/user.schema";
-import TokenExpiredException from "../exceptions/TokenExpired";
-import TokenNotExistException from "../exceptions/TokenNotExistException";
 import WrongCredentialsException from "../exceptions/WrongCredentialsException";
 import UserWithThatEmailAlreadyExistsException from "../exceptions/UserWithThatEmailAlreadyExistsException";
 import { createToken } from "../utils/jwt";
@@ -25,20 +20,11 @@ class AuthenticationService {
       throw new UserWithThatEmailAlreadyExistsException(userData.email);
     }
 
-    const code = await cryptoRandomString({ length: 4, type: "numeric" });
-    const token = await cryptoRandomString({ length: 16, type: "url-safe" });
-
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     user = await this.user.create({
-      code,
       ...userData,
       email_verified: false,
       password: hashedPassword,
-    });
-
-    await verifyModel.create({
-      email: userData.email,
-      token,
     });
 
     const userObj = omit(user.toJSON(), ["password", "code"]);
@@ -72,21 +58,11 @@ class AuthenticationService {
     }
   }
 
-  public async verifyToken(token: string) {
-    const verify = await verifyModel.findOne({ token });
-
-    if (!verify) throw new TokenNotExistException(token);
-    const diff =
-      (new Date(verify.createdAt).getTime() - new Date().getTime()) / 1000;
-
-    if (diff > Number(settings.EXPIRES)) {
-      throw new TokenExpiredException(verify.email, verify.token);
-    }
-    await this.user.findOneAndUpdate(
-      { email: verify.email },
-      { email_verified: true }
-    );
-    await verify.delete();
+  public async refreshToken(user: UserDocument) {
+    return {
+      ...createToken(user),
+      user: omit(user.toJSON(), ["password", "code"]) as IUserResponse,
+    };
   }
 }
 

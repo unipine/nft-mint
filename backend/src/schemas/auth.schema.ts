@@ -23,9 +23,4 @@ export const emailLoginSchema = object({
   ...payload,
 });
 
-export const emailTokenVerifySchema = object({
-  ...emailTokenVerifyPayload,
-});
-
 export type EmailLoginInput = TypeOf<typeof emailLoginSchema>;
-export type EmailTokenVerifyInput = TypeOf<typeof emailTokenVerifySchema>;

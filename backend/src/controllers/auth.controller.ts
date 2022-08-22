@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction, Router } from "express";
-import { omit } from "lodash";
 
 import Controller from "../interfaces/controller";
 import RequestWithUser from "../interfaces/requestWithUser";
@@ -9,8 +8,6 @@ import AuthenticationService from "../services/auth.service";
 import {
   emailLoginSchema,
   EmailLoginInput,
-  emailTokenVerifySchema,
-  EmailTokenVerifyInput,
 } from "../schemas/auth.schema";
 import { createUserSchema, CreateUserInput } from "../schemas/user.schema";
 
@@ -35,14 +32,9 @@ class AuthController implements Controller {
       this.loggingIn
     );
     this.router.post(
-      `${this.path}/verifyToken`,
-      validationMiddleware(emailTokenVerifySchema),
-      this.verifyToken
-    );
-    this.router.post(
-      `${this.path}/validateToken`,
+      `${this.path}/refreshToken`,
       authMiddleware,
-      this.validateToken
+      this.refreshToken
     );
   }
 
@@ -84,31 +76,17 @@ class AuthController implements Controller {
     }
   };
 
-  private verifyToken = async (
-    request: Request<{}, {}, EmailTokenVerifyInput["body"]>,
-    response: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const token = request.body.token;
-
-      await this.authenticationService.verifyToken(token);
-
-      response.sendStatus(200);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  private validateToken = async (
+  private refreshToken = async (
     request: RequestWithUser,
     response: Response,
     next: NextFunction
   ) => {
+    const user = request.user;
+
     try {
-      response.send({
-        user: omit(request.user.toJSON(), ["password", "code"]),
-      });
+      const tokenData = await this.authenticationService.refreshToken(user);
+
+      response.send(tokenData);
     } catch (error) {
       next(error);
     }
