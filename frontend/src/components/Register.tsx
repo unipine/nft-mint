@@ -10,22 +10,10 @@ const Register: React.FC = () => {
   const [message, setMessage] = useState<string>("");
 
   const initialValues: IUser = {
-    username: "",
-    email: "",
-    password: "",
+    user: { email: "", password: "" },
   };
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string()
-      .test(
-        "len",
-        "The username must be between 3 and 20 characters.",
-        (val: any) =>
-          val &&
-          val.toString().length >= 3 &&
-          val.toString().length <= 20
-      )
-      .required("This field is required!"),
     email: Yup.string()
       .email("This is not a valid email.")
       .required("This field is required!"),
@@ -34,30 +22,23 @@ const Register: React.FC = () => {
         "len",
         "The password must be between 6 and 40 characters.",
         (val: any) =>
-          val &&
-          val.toString().length >= 6 &&
-          val.toString().length <= 40
+          val && val.toString().length >= 6 && val.toString().length <= 40
       )
       .required("This field is required!"),
   });
 
   const handleRegister = (formValue: IUser) => {
-    const { username, email, password } = formValue;
+    const {
+      user: { email, password },
+    } = formValue;
 
-    register(username, email, password).then(
-      (response) => {
-        setMessage(response.data.message);
+    register(email, password).then(
+      () => {
+        setMessage("Successfully registered, You can login now!");
         setSuccessful(true);
       },
       (error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-
-        setMessage(resMessage);
+        setMessage(error.response.data.message || error.message);
         setSuccessful(false);
       }
     );
@@ -79,16 +60,6 @@ const Register: React.FC = () => {
           <Form>
             {!successful && (
               <div>
-                <div className="form-group">
-                  <label htmlFor="username"> Username </label>
-                  <Field name="username" type="text" className="form-control" />
-                  <ErrorMessage
-                    name="username"
-                    component="div"
-                    className="alert alert-danger"
-                  />
-                </div>
-
                 <div className="form-group">
                   <label htmlFor="email"> Email </label>
                   <Field name="email" type="email" className="form-control" />
@@ -114,7 +85,9 @@ const Register: React.FC = () => {
                 </div>
 
                 <div className="form-group">
-                  <button type="submit" className="btn btn-primary btn-block">Sign Up</button>
+                  <button type="submit" className="btn btn-primary btn-block">
+                    Sign Up
+                  </button>
                 </div>
               </div>
             )}

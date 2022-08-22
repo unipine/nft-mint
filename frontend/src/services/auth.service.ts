@@ -1,23 +1,22 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/auth/";
+import settings from "../config/settings";
 
-export const register = (username: string, email: string, password: string) => {
-  return axios.post(API_URL + "signup", {
-    username,
+export const register = (email: string, password: string) => {
+  return axios.post(`${settings.BACKEND_URL}/auth/register`, {
     email,
     password,
   });
 };
 
-export const login = (username: string, password: string) => {
+export const login = (email: string, password: string) => {
   return axios
-    .post(API_URL + "signin", {
-      username,
+    .post(`${settings.BACKEND_URL}/auth/loginWithEmail`, {
+      email,
       password,
     })
     .then((response) => {
-      if (response.data.accessToken) {
+      if (response.data.token) {
         localStorage.setItem("user", JSON.stringify(response.data));
       }
 
