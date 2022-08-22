@@ -13,6 +13,7 @@ function validateEnv() {
     NFT_STORAGE_KEY: str(),
     ALCHEMY_API_KEY: str(),
     NETWORK: str(),
+    ADMIN_WALLET: str()
   });
 }
 

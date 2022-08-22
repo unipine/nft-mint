@@ -1,5 +1,5 @@
-import * as bcrypt from "bcrypt";
-import * as cryptoRandomString from "crypto-random-string";
+import bcrypt from "bcrypt";
+import cryptoRandomString from "crypto-random-string";
 import { omit } from "lodash";
 
 import settings from "../config/settings";

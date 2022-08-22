@@ -34,7 +34,7 @@ async function main() {
 
 function saveFrontendFiles(nft) {
   const fs = require("fs");
-  const contractsDir = path.join(__dirname, "..", "contracts");
+  const contractsDir = path.join(__dirname, "..", "backend", "contracts");
 
   if (!fs.existsSync(contractsDir)) {
     fs.mkdirSync(contractsDir);

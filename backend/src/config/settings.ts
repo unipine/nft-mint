@@ -10,4 +10,5 @@ export default {
   NFT_STORAGE_KEY: process.env.NFT_STORAGE_KEY,
   ALCHEMY_API_KEY: process.env.ALCHEMY_API_KEY,
   NETWORK: process.env.NETWORK,
+  ADMIN_WALLET: process.env.ADMIN_WALLET,
 };

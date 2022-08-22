@@ -1,8 +1,8 @@
-import * as bodyParser from "body-parser";
-import * as express from "express";
-import * as mongoose from "mongoose";
-import * as cors from "cors";
-import * as fileUpload from "express-fileupload";
+import bodyParser from "body-parser";
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import fileUpload from "express-fileupload";
 
 import settings from "./config/settings";
 import Controller from "./interfaces/controller";

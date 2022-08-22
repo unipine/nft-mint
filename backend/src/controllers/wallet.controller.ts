@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, Router } from "express";
-import * as ethers from "ethers";
-import * as crypto from "crypto";
+import ethers from "ethers";
+import crypto from "crypto";
 import { omit } from "lodash";
 
 import Controller from "../interfaces/controller";
@@ -26,6 +26,9 @@ class WalletController implements Controller {
     // );
   }
 
+  /**
+   * Private Function that generate Ethereum wallet address
+   */
   private generate = async (
     request: Request,
     response: Response,
@@ -39,15 +42,18 @@ class WalletController implements Controller {
         throw new WalletAlreadyExistsException(user.email);
       }
 
+      // Generate a random hex number and use it as a private key
       const id = crypto.randomBytes(32).toString("hex");
-      const private_key = "0x" + id;
-      const ethWallet = new ethers.Wallet(private_key);
-      const public_key = ethWallet.address;
+      const privateKey = "0x" + id;
+      // Create wallet using generated private key
+      const ethWallet = new ethers.Wallet(privateKey);
+      // Get public key
+      const publicKey = ethWallet.address;
 
       const newWallet = await walletModel.create({
         user,
-        public_key,
-        private_key,
+        publicKey,
+        privateKey,
       });
 
       const walletObj = omit(newWallet.toJSON(), ["user", "_id"]);

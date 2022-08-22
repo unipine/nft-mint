@@ -2,21 +2,21 @@ import mongoose, { Schema } from "mongoose";
 
 export interface IWallet {
   user: [{ type: Schema.Types.ObjectId; ref: "user" }];
-  public_key: string;
-  private_key: string;
+  publicKey: string;
+  privateKey: string;
   createdAt: Date;
 }
 
 export interface IWalletResponse
-  extends Omit<IWallet, "email" | "public_key"> {}
+  extends Omit<IWallet, "email" | "publicKey"> {}
 
 export interface WalletDocument extends IWallet, mongoose.Document {}
 
 const walletSchema = new mongoose.Schema(
   {
     user: { type: Schema.Types.ObjectId },
-    public_key: { type: String },
-    private_key: { type: String },
+    publicKey: { type: String },
+    privateKey: { type: String },
   },
   {
     timestamps: true,
