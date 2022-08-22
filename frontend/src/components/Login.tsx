@@ -1,17 +1,12 @@
 import React, { useState } from "react";
+import { RouteComponentProps } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 import { login } from "../services/auth.service";
-import { RouteComponentProps } from "react-router-dom";
+import { RouterProps } from "../types/router";
 
-interface RouterProps {
-  history: string;
-}
-
-type Props = RouteComponentProps<RouterProps>;
-
-const Login: React.FC<Props> = ({ history }) => {
+const Login: React.FC<RouteComponentProps<RouterProps>> = ({ history }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 
@@ -40,15 +35,8 @@ const Login: React.FC<Props> = ({ history }) => {
         window.location.reload();
       },
       (error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-
         setLoading(false);
-        setMessage(resMessage);
+        setMessage(error.response.data.message || error.message);
       }
     );
   };

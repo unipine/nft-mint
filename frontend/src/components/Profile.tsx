@@ -12,14 +12,14 @@ const Profile: React.FC = () => {
           <strong>{currentUser.user.email}</strong> Profile
         </h3>
       </header>
-      <p>
+      <p className="border-bottom pb-1">
         <strong>Token:</strong> {currentUser.token.substring(0, 20)} ...{" "}
         {currentUser.token.substr(currentUser.token.length - 20)}
       </p>
-      <p>
+      <p className="border-bottom pb-1">
         <strong>Id:</strong> {currentUser.user._id}
       </p>
-      <p>
+      <p className="border-bottom pb-1">
         <strong>Joined:</strong> {currentUser.user.createdAt}
       </p>
     </div>
