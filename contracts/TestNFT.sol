@@ -9,22 +9,29 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "./lib/TextStorage.sol";
 
-contract AtatoNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
+contract TestNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable, TextStorage {
     using Counters for Counters.Counter;
 
-    Counters.Counter private _tokenIdCounter;
+    Counters.Counter private tokenIdCounter;
 
     constructor() ERC721("TestNFT", "TNFT") {}
 
-    function safeMint(address to, string memory uri) public onlyOwner {
-        _safeMint(to, _tokenIdCounter.current());
-        _setTokenURI(_tokenIdCounter.current(), uri);
-        _tokenIdCounter.increment();
+    function safeMintImage(address to, string memory uri) public onlyOwner {
+        _safeMint(to, tokenIdCounter.current());
+        _setTokenURI(tokenIdCounter.current(), uri);
+        tokenIdCounter.increment();
+    }
+
+    function safeMintText(address to, string memory text) public onlyOwner {
+        _safeMint(to, tokenIdCounter.current());
+        _storeText(tokenIdCounter.current(), text);
+        tokenIdCounter.increment();
     }
 
     function currentCounter() public view returns (uint256) {
-        return _tokenIdCounter.current();
+        return tokenIdCounter.current();
     }
 
     // The following functions are overrides required by Solidity.

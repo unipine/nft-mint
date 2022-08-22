@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "NFT minting app using randomly generated wallet addresses",
   "scripts": {
-    "test": "hardhat test"
+    "test": "hardhat test",
+    "deploy": "hardhat run scripts/deploy.js --network goerli"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,7 @@
     "@nomiclabs/hardhat-etherscan": "^3.0.0",
     "@openzeppelin/contracts": "^4.7.3",
     "chai": "^4.2.0",
+    "dotenv": "^16.0.1",
     "ethers": "^5.4.7",
     "hardhat": "^2.9.9",
     "hardhat-gas-reporter": "^1.0.8",
