@@ -1,6 +1,5 @@
 const { expect } = require("chai");
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const { BigNumber } = require("ethers");
 
 describe("NFT contract", function () {
   const dummyCid = "dummy cid";
@@ -48,7 +47,7 @@ describe("NFT contract", function () {
       const { NftContract, alice } = await loadFixture(deployNftFixture);
 
       // Mint dummy NFT to Alice.
-      await NftContract.safeMintImage(alice.address, textNft);
+      await NftContract.safeMintImage(alice.address, dummyCid);
 
       // This test expects the counter variable stored in the contract to be 1
       // after NFT mint.
@@ -56,7 +55,7 @@ describe("NFT contract", function () {
       // This test expects the owner of NFT to be Alice.
       expect(await NftContract.ownerOf(0)).to.equal(alice.address);
       // This test expects the uri of NFT to be "dummy cid".
-      expect(await NftContract.tokenURI(0)).to.equal(textNft);
+      expect(await NftContract.tokenURI(0)).to.equal(dummyCid);
     });
 
     it("Should return the Text NFT", async () => {
@@ -64,6 +63,7 @@ describe("NFT contract", function () {
 
       // Mint dummy text NFT to Alice.
       await NftContract.safeMintText(alice.address, textNft);
+      // await NftContract.safeMintImage(alice.address, textNft);
 
       // This test expects the counter variable stored in the contract to be 1
       // after nft mint.
