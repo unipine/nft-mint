@@ -61,7 +61,7 @@ Provides two functions for storing CID or text to the Smart Contract.
 - [safeMintText](https://github.com/unipine/nft-mint/blob/3d377fef5ee842a7d2128f46878bd5f92f453dec/contracts/TestNFT.sol#L27-L31)
   This function stores CID (or text) to Solidity slots according to [Solidity string storage layout](https://docs.soliditylang.org/en/v0.8.13/internals/layout_in_storage.html#bytes-and-string).
 
-Gas reports for both functions:
+Gas reports for both functions - 1kb text:
 | | safeMintImage | safeMintText |
 | ------- | -------------- | ------------ |
 | Gas Fee | 878336 | 923556 |
