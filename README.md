@@ -5,8 +5,8 @@ This repository contains smart contracts, frontend and backend that randomly gen
 - [Quick Start](#quick-start)
 - [Overview](#overview)
   - [Smart Contract](#smart-contract)
-  - [Frontend](#frontend)
   - [Backend](#backend)
+  - [Frontend](#frontend)
 
 ## Quick start
 
@@ -65,10 +65,6 @@ Gas reports for both functions - 1kb text:
 | | safeMintImage | safeMintText |
 | ------- | -------------- | ------------ |
 | Gas Fee | 878336 | 923556 |
-
-### Frontend
-
-This [frontend](https://github.com/unipine/nft-mint/tree/main/frontend) was developed with [React.js](https://reactjs.org/) and [TypeScript](https://www.typescriptlang.org/). Provides user interfaces allowing users to register, login to the app and generate wallet and mint NFTs.
 
 ### Backend
 
@@ -196,6 +192,10 @@ Endpoints:
   }
 </pre>
 </details>
+
+### Frontend
+
+This [frontend](https://github.com/unipine/nft-mint/tree/main/frontend) was developed with [React.js](https://reactjs.org/) and [TypeScript](https://www.typescriptlang.org/). Provides user interfaces allowing users to register, login to the app and generate wallet and mint NFTs.
 
 ## References
 
