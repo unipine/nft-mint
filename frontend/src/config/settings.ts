@@ -4,7 +4,7 @@ const settings = {
     { path: "/home", label: "Home", public: true },
     { path: "/wallet", label: "Wallet", public: false },
     { path: "/mint", label: "Mint", public: false },
-    { path: "/gallery", label: "NFT Gallery", public: true },
+    { path: "/gallery", label: "NFT Gallery", public: false },
   ],
 };
 
