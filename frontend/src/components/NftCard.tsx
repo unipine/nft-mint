@@ -20,7 +20,7 @@ const NftCard = ({ nft }: { nft: NftType }) => {
           setMessage(error.response.data.message || error.message);
         });
     }
-  }, []);
+  }, [nft]);
 
   useEffect(() => {
     init();
