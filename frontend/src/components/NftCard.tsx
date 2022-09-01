@@ -10,7 +10,7 @@ const NftCard = ({ nft }: { nft: NftType }) => {
   const [message, setMessage] = useState<string>();
 
   const init = useCallback(() => {
-    if (typeof nft.data === "object") {
+    if (nft.data.type === "image") {
       getMetadata(nft.data.ipnft)
         .then((response) => {
           setMetadata(response.data);
@@ -37,25 +37,33 @@ const NftCard = ({ nft }: { nft: NftType }) => {
           </div>
         )}
 
-        {nft.type === "image" ? (
+        {nft.data.type === "image" ? (
           !metadata ? (
             <p>Loading from IPFS...</p>
           ) : (
             typeof metadata === "object" && (
-              <LazyLoadImage
-                alt={metadata.name}
-                width={"100%"}
-                height={"100%"}
-                src={makeUrl(metadata.image, true)}
-              />
+              <>
+                <LazyLoadImage
+                  alt={metadata.name}
+                  width={"100%"}
+                  height={"100%"}
+                  src={makeUrl(metadata.image, true)}
+                />
+                <div>Name: {metadata.name}</div>
+                <div>Description: {metadata.description}</div>
+              </>
             )
           )
         ) : (
-          <textarea
-            defaultValue={nft.data.toString()}
-            style={{ minHeight: 300 }}
-            disabled
-          />
+          <>
+            <textarea
+              defaultValue={nft.data.data.toString()}
+              style={{ minHeight: 218 }}
+              disabled
+            />
+            <div>Name: {nft.data.name}</div>
+            <div>Description: {nft.data.description}</div>
+          </>
         )}
       </div>
     </div>

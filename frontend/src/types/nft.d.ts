@@ -1,12 +1,19 @@
-export type NftDataType = {
+export type NftImageType = {
+  type: "image";
   ipnft: string;
   url: string;
 };
 
+export type NftTextType = {
+  type: "text";
+  data: string;
+  name: string;
+  description: string;
+}
+
 export type NftType = {
-  data: NftDataType | string;
+  data: NftImageType | NftTextType;
   nftId: number;
-  type: "image" | "text";
 };
 
 export type MetadataType = {

@@ -103,14 +103,18 @@ class NftController implements Controller {
         // Mint Image NFT belonging to user
         await this.TestNft.safeMintImage(userWallet.publicKey, data.ipnft);
       } else if (file.mimetype.startsWith("text") && file.size <= 1024) {
-        data = file.data.toString();
+        data = {
+          name,
+          description,
+          data: file.data.toString(),
+        };
         type = "text";
 
         // Mint Text NFT belonging to user using mapping
-        // await this.TestNft.safeMintImage(userWallet.publicKey, data);
+        // await this.TestNft.safeMintImage(userWallet.publicKey, data.data);
 
         // Mint Text NFT belonging to user using TextStorage
-        await this.TestNft.safeMintText(userWallet.publicKey, data);
+        await this.TestNft.safeMintText(userWallet.publicKey, data.data);
       } else {
         throw new WrongFileException();
       }
@@ -118,8 +122,10 @@ class NftController implements Controller {
       const nft = await nftModel.create({
         user,
         wallet: userWallet,
-        data,
-        type,
+        data: {
+          ...data,
+          type,
+        },
         nftId,
       });
       const nftObj = omit(nft.toJSON(), ["_id", "user", "wallet"]);

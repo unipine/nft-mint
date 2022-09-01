@@ -56,7 +56,7 @@ class App {
       await mongoose.connect(
         `${NODE_ENV === "development" ? "mongodb" : "mongodb+srv"}://${
           MONGO_USER ? `${MONGO_USER}:${MONGO_PASS}@` : ""
-        }${MONGO_HOST}/${MONGO_DB}`
+        }${MONGO_HOST}/${MONGO_DB}?retryWrites=true&w=majority`
       );
       logger.info("DB connected");
     } catch (error) {
