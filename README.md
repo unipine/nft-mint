@@ -5,8 +5,8 @@ This repository contains smart contracts, frontend and backend that randomly gen
 - [Quick Start](#quick-start)
 - [Overview](#overview)
   - [Smart Contract](#smart-contract)
-  - [Frontend](#frontend)
   - [Backend](#backend)
+  - [Frontend](#frontend)
 
 ## Quick start
 
@@ -56,19 +56,15 @@ This [NFT contract](https://github.com/unipine/nft-mint/blob/main/contracts/Test
 
 Provides two functions for storing CID or text to the Smart Contract.
 
-- [safeMintImage](https://github.com/unipine/nft-mint/blob/3d377fef5ee842a7d2128f46878bd5f92f453dec/contracts/TestNFT.sol#L21-L25)
+- [safeMintImage](https://github.com/unipine/nft-mint/blob/92e2e0fd4ededda3bb565f255e06a046ccd1011f/contracts/TestNFT.sol#L21-L25)
   This function stores CID (or text) to Solidity mapping.
-- [safeMintText](https://github.com/unipine/nft-mint/blob/3d377fef5ee842a7d2128f46878bd5f92f453dec/contracts/TestNFT.sol#L27-L31)
+- [safeMintText](https://github.com/unipine/nft-mint/blob/92e2e0fd4ededda3bb565f255e06a046ccd1011f/contracts/TestNFT.sol#L27-L31)
   This function stores CID (or text) to Solidity slots according to [Solidity string storage layout](https://docs.soliditylang.org/en/v0.8.13/internals/layout_in_storage.html#bytes-and-string).
 
-Gas reports for both functions:
+Gas reports for both functions - 1kb text:
 | | safeMintImage | safeMintText |
 | ------- | -------------- | ------------ |
 | Gas Fee | 878336 | 923556 |
-
-### Frontend
-
-This [frontend](https://github.com/unipine/nft-mint/tree/main/frontend) was developed with [React.js](https://reactjs.org/) and [TypeScript](https://www.typescriptlang.org/). Provides user interfaces allowing users to register, login to the app and generate wallet and mint NFTs.
 
 ### Backend
 
@@ -196,6 +192,10 @@ Endpoints:
   }
 </pre>
 </details>
+
+### Frontend
+
+This [frontend](https://github.com/unipine/nft-mint/tree/main/frontend) was developed with [React.js](https://reactjs.org/) and [TypeScript](https://www.typescriptlang.org/). Provides user interfaces allowing users to register, login to the app and generate wallet and mint NFTs.
 
 ## References
 
