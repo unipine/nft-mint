@@ -3,6 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import fileUpload from "express-fileupload";
+import path from "path";
 
 import settings from "./config/settings";
 import Controller from "./interfaces/controller";
@@ -18,6 +19,7 @@ class App {
     this.connectToTheDatabase();
     this.initializeMiddlewares();
     this.initializeControllers(controllers);
+    this.hostClient();
     this.initializeErrorHandling();
   }
 
@@ -36,6 +38,7 @@ class App {
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(cors({ origin: "*" }));
     this.app.use(fileUpload({}));
+    this.app.use(express.static(path.resolve(__dirname, "../client")));
   }
 
   private initializeErrorHandling() {
@@ -45,6 +48,12 @@ class App {
   private initializeControllers(controllers: Controller[]) {
     controllers.forEach((controller) => {
       this.app.use(controller.router);
+    });
+  }
+
+  private hostClient() {
+    this.app.get("*", (_, res) => {
+      res.sendFile(path.resolve(__dirname, "../client", "index.html"));
     });
   }
 
