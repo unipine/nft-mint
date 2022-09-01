@@ -1,5 +1,7 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import "module-alias/register";
+
+dotenv.config();
 
 import App from "./app";
 import AuthController from "./controllers/auth.controller";
